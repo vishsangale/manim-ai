@@ -3,8 +3,9 @@ Multi-head attention visualizations.
 """
 from manim import *
 from ..core.tensors import SmartTensor
+from ..core.annotations import Annotatable
 
-class AttentionHead(VGroup):
+class AttentionHead(VGroup, Annotatable):
     def __init__(self, sequence_len=5, embed_dim=4):
         super().__init__()
         self.query = SmartTensor((1, embed_dim))

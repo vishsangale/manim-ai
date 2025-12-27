@@ -1,7 +1,8 @@
 from manim import *
 import numpy as np
+from .annotations import Annotatable
 
-class SmartTensor(VGroup):
+class SmartTensor(VGroup, Annotatable):
     """
     A visualization of a tensor that knows its shape and data.
     Can render as a Vector (1D), Grid (2D), or Stack (3D).
