@@ -11,9 +11,12 @@ class MatrixMultiplication(VGroup, Annotatable):
     """
     def __init__(self, shape_a=(3, 4), shape_b=(4, 2), **kwargs):
         super().__init__(**kwargs)
-        self.A = SmartTensor(shape_a).add_label("A")
-        self.B = SmartTensor(shape_b).add_label("B")
-        self.C = SmartTensor((shape_a[0], shape_b[1])).add_label("C")
+        self.A = SmartTensor(shape_a)
+        self.A.add_label("A")
+        self.B = SmartTensor(shape_b)
+        self.B.add_label("B")
+        self.C = SmartTensor((shape_a[0], shape_b[1]))
+        self.C.add_label("C")
         
         # Layout: A slightly left, B next to it, = C
         self.A.move_to(LEFT * 3)
