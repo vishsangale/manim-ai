@@ -42,7 +42,10 @@ class AttentionHead(VGroup, Annotatable):
         
         animations = []
         
-        # 1. Slide scanner down the keys
+        # 1. Reveal the scores container first
+        animations.append(FadeIn(scores))
+
+        # 2. Slide scanner down the keys
         # self.keys is a VGroup of rows (from SmartTensor._build_grid)
         for i, key_row in enumerate(self.keys):
             if i == 0:
