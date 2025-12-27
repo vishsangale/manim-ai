@@ -1,6 +1,6 @@
-# Manimai
+# ManimAI
 
-**Manimai** is a Python library for creating animations of AI blocks using [Manim](https://www.manim.community/). It provides high-level abstractions like `SmartTensor` and blocks for visualizing Neural Network components like Attention Mechanisms.
+**ManimAI** is a Python library for creating animations of AI blocks using [Manim](https://www.manim.community/). It provides high-level abstractions like `SmartTensor` and blocks for visualizing Neural Network components like Attention Mechanisms.
 
 ## Features
 

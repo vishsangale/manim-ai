@@ -3,9 +3,9 @@ requires = ["setuptools>=61.0"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "manimai"
+name = "manim-ai"
 version = "0.1.0"
-description = "A library creating animation for AI blocks using manim library"
+description = "A library creating animations for AI blocks using manim library"
 readme = "README.md"
 requires-python = ">=3.8"
 license = {text = "MIT"}

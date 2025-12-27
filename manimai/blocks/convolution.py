@@ -45,14 +45,109 @@ class Conv2DBlock(VGroup, Annotatable):
         
         self.add(self.input_tensor, self.kernel_tensor, self.output_tensor, arrow1, arrow2)
 
-    def animate_convolution(self):
+    def animate_convolution(self, run_time=5.0):
         """
-        Animating the sliding window effect is complex. 
-        For now, we return a simple creation animation.
+        Animates the sliding window convolution process.
+        Returns a Succession of animations.
         """
-        # A placeholder for a more complex "sliding" animation later
-        return Succession(
-            Create(self.input_tensor),
-            Create(self.kernel_tensor),
-            Create(self.output_tensor)
+        # 1. Reveal everything initially? Or build it?
+        # Let's assume the user has added the block to scene or we return a Creation first.
+        # But usually 'animate_convolution' describes the action.
+        
+        anims = []
+        
+        # Dimensions
+        k_rows, k_cols = self.kernel_shape
+        out_rows, out_cols = self.output_shape
+        
+        # Create a sliding window (Rectangle)
+        # We need the size of the kernel in terms of local coordinates.
+        # We can just get the VGroup of the first k_rows*k_cols cells?
+        # Simpler: Get the top-left cell at (0,0) and bottom-right at (k_rows-1, k_cols-1)
+        # and surround them.
+        
+        # Helper to get sub-grid bounding box logic would be nice, but we can do it manually.
+        # input_tensor.cells is now available thanks to our refactor!
+        
+        # Access cells: self.input_tensor.cells[row][col]
+        tl_cell = self.input_tensor.cells[0][0]
+        br_cell = self.input_tensor.cells[k_rows-1][k_cols-1]
+        
+        # Create window rectangle
+        window = SurroundingRectangle(
+            VGroup(tl_cell, br_cell),
+            color=YELLOW,
+            buff=0.1
         )
+        
+        # Create output highlighter (single cell)
+        out_highlight = SurroundingRectangle(
+            self.output_tensor.cells[0][0],
+            color=YELLOW,
+            buff=0.1
+        )
+        
+        # Hide output cells initially to reveal them?
+        # Or just flash/indicate them.
+        # Let's set output tensor opacity to near zero initially? 
+        # Or we can just Flash/FadeIn each cell.
+        # Let's assume they are visible but we "activate" them.
+        
+        anims.append(Create(window))
+        anims.append(FadeIn(out_highlight))
+        
+        step_time = run_time / (out_rows * out_cols)
+        
+        sliding_anims = []
+        
+        for i in range(out_rows):
+            for j in range(out_cols):
+                # Calculate window position for Input
+                # Top-Left of window is at (i, j)
+                # Bottom-Right is at (i + k_rows - 1, j + k_cols - 1)
+                
+                curr_tl = self.input_tensor.cells[i][j]
+                curr_br = self.input_tensor.cells[i + k_rows - 1][j + k_cols - 1]
+                target_window_group = VGroup(curr_tl, curr_br)
+                
+                # Output cell position
+                curr_out_cell = self.output_tensor.cells[i][j]
+                
+                # Move Window and Highlighter
+                move_window = window.animate(run_time=step_time).move_to(target_window_group)
+                move_highlight = out_highlight.animate(run_time=step_time).move_to(curr_out_cell)
+                
+                # "Compute" effect - flash the output cell
+                # We can also flash the kernel or something to show interaction
+                compute_effect = Flash(curr_out_cell, color=YELLOW, run_time=step_time, flash_radius=0.2)
+                
+                # Add a "Write" or "FadeIn" effect specifically for the output cell content
+                # reusing our update_data mechanism? 
+                # Or just emphasis.
+                activate_cell = curr_out_cell.animate.set_fill(opacity=1.0) # Assuming it started dim
+                
+                # Combine for this step
+                # If it's the very first one, we just create, don't move.
+                if i==0 and j==0:
+                    sliding_anims.append(
+                        AnimationGroup(
+                            compute_effect,
+                            activate_cell
+                        )
+                    )
+                else:
+                    sliding_anims.append(
+                        AnimationGroup(
+                            move_window,
+                            move_highlight,
+                            compute_effect,
+                            activate_cell
+                        )
+                    )
+                    
+        anims.append(Succession(*sliding_anims))
+        anims.append(FadeOut(window))
+        anims.append(FadeOut(out_highlight))
+        
+        return Succession(*anims)
+
