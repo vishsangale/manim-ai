@@ -51,6 +51,17 @@ class AttentionScene(Scene):
         self.play(attention.animate_attention_score())
 ```
 
+
+## running Demos
+
+To generate example animations, run:
+
+```bash
+manim -ql examples/demo_scene.py SmartTensorDemo AttentionDemo
+```
+
+The output videos will be in `media/videos/demo_scene/480p15/`.
+
 ## Testing
 
 Run the tests using `unittest`:

@@ -67,19 +67,29 @@ class SmartTensor(VGroup):
         self.center()
 
     def _build_cube(self):
-        # 3D stack visualization: Stack of Grids
+        # 3D stack visualization: Voxel Grid using Cubes
         depth, rows, cols = self.shape
         for k in range(depth):
             grid_group = VGroup()  # Create VGroup for the grid (slice)
             for i in range(rows):
                 row_group = VGroup()  # Create VGroup for each row
                 for j in range(cols):
-                    sq = Square(side_length=self.cell_size)
+                    # Use Cube for 3D representation
+                    # Note: Cube side_length is usually 2 by default in older manim, checking docs or assuming side_length param works
+                    # If Cube(side_length=...) fails, we might need Scale.
+                    # Standard Manim Community Cube inherits from Mobject.
+                    # Let's try standard VCube/Cube. If 'Cube' is strictly a surface, we want a 'Cube' mesh or similar.
+                    # Actually, standard manim usually has Cube as a 3D mobject.
+                    voxel = Cube(side_length=self.cell_size)
+                    
                     val = self.data[k, i, j]
-                    opacity = np.clip(val, 0, 1)
-                    sq.set_fill(color=BLUE, opacity=opacity)
-                    sq.set_stroke(WHITE, width=1)
-                    row_group.add(sq)
+                    # Opacity for 3D objects is often set via fill_rgba or similar, but set_fill should work for Mobjects
+                    # We usually want some transparency to see inside
+                    opacity = np.clip(val, 0.2, 0.8) # Ensure some visibility
+                    
+                    voxel.set_fill(color=BLUE, opacity=opacity)
+                    voxel.set_stroke(WHITE, width=0.5, opacity=0.5)
+                    row_group.add(voxel)
                 
                 # Arrange the row horizontally
                 row_group.arrange(RIGHT, buff=0)
@@ -90,5 +100,5 @@ class SmartTensor(VGroup):
             self.add(grid_group)
         
         # Arrange the grids along the Z-axis (OUT)
-        self.arrange(OUT, buff=0.5)
+        self.arrange(OUT, buff=0)
         self.center()
