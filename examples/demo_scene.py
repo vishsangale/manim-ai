@@ -1,6 +1,7 @@
 from manim import *
 from manimai.core.tensors import SmartTensor
 from manimai.blocks.attention import AttentionHead
+from manimai.utils.code_window import CodeTracker
 import numpy as np
 
 class SmartTensorDemo(Scene):
@@ -49,5 +50,37 @@ class AttentionDemo(Scene):
         self.wait(0.5)
         
         self.play(attention.animate_attention_score())
+        self.wait(1)
+
+
+class CodeTrackerDemo(Scene):
+    def construct(self):
+        code = """def forward(self, x):
+    # 1. Linear Projection
+    q = self.query(x)
+    k = self.key(x)
+    v = self.value(x)
+    
+    # 2. Attention Scores
+    scores = q @ k.transpose(-2, -1)
+    return scores"""
+        
+        # Create Code Window
+        tracker = CodeTracker(code, language="python")
+        tracker.to_edge(RIGHT)
+        self.add(tracker)
+        
+        # Simulate walking through execution
+        self.play(tracker.highlight_line(2))
+        self.wait(0.5)
+        self.play(tracker.highlight_line(3))
+        self.wait(0.5)
+        self.play(tracker.highlight_line(4))
+        self.wait(0.5)
+        self.play(tracker.highlight_line(5))
+        self.wait(0.5)
+        self.play(tracker.highlight_line(8))
+        self.wait(0.5)
+        self.play(tracker.highlight_line(9))
         self.wait(1)
 
