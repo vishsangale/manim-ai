@@ -31,5 +31,12 @@ class TestSmartTensor(unittest.TestCase):
             for i, row in enumerate(grid):
                 self.assertEqual(len(row), cols, f"Grid {k} Row {i} should have {cols} columns")
 
+    def test_tensor_with_data(self):
+        """Test initializing Tensor with explicit data"""
+        data = np.ones((2, 2))
+        t = SmartTensor((2, 2), data=data)
+        # Verify stored data matches input
+        np.testing.assert_array_equal(t.data, data)
+
 if __name__ == "__main__":
     unittest.main()

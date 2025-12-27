@@ -84,3 +84,45 @@ class CodeTrackerDemo(Scene):
         self.play(tracker.highlight_line(9))
         self.wait(1)
 
+from manimai.blocks.convolution import Conv2DBlock
+from manimai.blocks.transformer import TransformerBlock
+from manimai.core.operations import MatrixMultiplication, Softmax
+
+class ConvDemo(Scene):
+    def construct(self):
+        block = Conv2DBlock()
+        block.add_label("Convolution Layer").to_edge(UP)
+        self.add(block)
+        self.play(block.animate_convolution())
+        self.wait(1)
+
+class TransformerDemo(Scene):
+    def construct(self):
+        block = TransformerBlock()
+        # Scale down to fit screen if needed
+        block.scale(0.8)
+        block.move_to(ORIGIN)
+        self.add(block)
+        self.play(FadeIn(block))
+        self.wait(2)
+
+class OperationsDemo(Scene):
+    def construct(self):
+        # 1. MatMul
+        matmul = MatrixMultiplication()
+        matmul.add_label("MatMul Operation").to_edge(UP)
+        self.add(matmul)
+        self.play(Create(matmul))
+        self.wait(1)
+        self.play(FadeOut(matmul))
+        
+        # 2. Softmax
+        # Reuse parts of MatMul logic for demo or create new vector
+        v = SmartTensor((5,))
+        v.move_to(LEFT * 3)
+        self.add(v)
+        softmax = Softmax(v)
+        self.add(softmax)
+        self.play(softmax.animate())
+        self.wait(1)
+

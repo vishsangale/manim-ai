@@ -61,6 +61,10 @@ class TestComponents(unittest.TestCase):
         
         # Check that highlight was added to tracker.highlights VGroup
         self.assertEqual(len(tracker.highlights), 1, "Highlighter rectangle should be added")
+        
+        # Highlight line 2 (should trigger Transform path)
+        anim2 = tracker.highlight_line(2)
+        self.assertTrue(isinstance(anim2, Transform), "Sequential highlight should return Transform animation")
 
 if __name__ == "__main__":
     unittest.main()
